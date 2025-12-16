@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | Sabor al Instante</title>
+    <link rel="icon" href="images/logo.svg" type="image/svg+xml" />
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet"
+     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #0e0e0e;
+            --card: #1a1a1a;
+            --card-light: #222;
+            --text: #f5f5f5;
+            --text-muted: #b8b8b8;
+            --gold: #d4c59e;
+            --gold-dark: #bba87c;
+            --accent: #8fae56;
+            --danger: #d93636;
+            --radius: 18px;
+            --shadow: 0 8px 35px rgba(0,0,0,.35);
+            font-family: "Poppins", system-ui, -apple-system, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* Fondo animado */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle at 20% 50%, rgba(143, 174, 86, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(212, 197, 158, 0.08) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(5deg); }
+            66% { transform: translate(-20px, 20px) rotate(-5deg); }
+        }
+
+        /* Botón volver */
+        .btn-volver {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            background: rgba(26, 26, 26, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 20px;
+            border-radius: 12px;
+            color: var(--gold);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .btn-volver:hover {
+            background: rgba(26, 26, 26, 1);
+            transform: translateX(-5px);
+            border-color: var(--gold);
+        }
+
+        /* Container principal */
+        .login-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 450px;
+            margin: 20px 0;
+        }
+
+        /* Logo y título */
+        .login-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .logo-container img {
+            width: 60px;
+            height: 60px;
+            filter: drop-shadow(0 0 20px rgba(143, 174, 86, 0.3));
+        }
+
+        .logo-container span {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold);
+            text-transform: lowercase;
+        }
+
+        .login-header h2 {
+            color: var(--text);
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Card del formulario */
+        .login-box {
+            background: var(--card);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Campos de entrada */
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            color: var(--text);
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 14px 50px 14px 45px;
+            background: var(--card-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .login-box input:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(34, 34, 34, 0.8);
+            box-shadow: 0 0 0 3px rgba(212, 197, 158, 0.1);
+        }
+
+        .login-box input::placeholder {
+            color: rgba(184, 184, 184, 0.5);
+        }
+
+        /* Toggle password */
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 8px;
+            transition: 0.3s;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-password:hover {
+            color: var(--gold);
+        }
+
+        .toggle-password i {
+            position: static;
+            pointer-events: none;
+        }
+
+        /* Botón principal */
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--accent) 0%, #7a9c48 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(143, 174, 86, 0.3);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(143, 174, 86, 0.4);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        /* Separador */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .divider span {
+            padding: 0 15px;
+        }
+
+        /* Link registro */
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .register-link a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .register-link a:hover {
+            color: var(--gold-dark);
+            gap: 10px;
+        }
+
+        /* Alerta de error */
+        .alert-error {
+            background: rgba(217, 54, 54, 0.15);
+            border: 1px solid rgba(217, 54, 54, 0.3);
+            color: #ff6b7a;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        .alert-error.show {
+            display: flex;
+        }
+
+        .alert-error i {
+            font-size: 1.2rem;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 500px) {
+            body {
+                padding: 80px 15px 40px 15px;
+            }
+
+            .login-container {
+                margin: 0;
+            }
+
+            .login-box {
+                padding: 30px 25px;
+            }
+
+            .btn-volver {
+                top: 15px;
+                left: 15px;
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+
+            .logo-container span {
+                font-size: 1.5rem;
+            }
+
+            .login-box input {
+                padding: 14px 45px 14px 40px;
+                font-size: 0.95rem;
+            }
+
+            .input-wrapper i {
+                left: 12px;
+                font-size: 1rem;
+            }
+
+            .toggle-password {
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Botón volver -->
+    <a href="index.html" class="btn-volver">
+        <i class="fa-solid fa-arrow-left"></i>
+        Volver al inicio
+    </a>
+
+    <div class="login-container">
+        <!-- Header -->
+        <div class="login-header">
+            <div class="logo-container">
+                <img src="images/logo.svg" alt="Logo Sabor al Instante">
+                <span>sabor al instante</span>
+            </div>
+            <h2>Bienvenido de nuevo</h2>
+            <p>Ingresa tus credenciales para continuar</p>
+        </div>
+
+        <!-- Formulario -->
+        <div class="login-box">
+            <!-- Alerta de error -->
+            <div id="alertError" class="alert-error">
+                <i class="fa-solid fa-circle-xmark"></i>
+                <span id="errorMessage">Usuario o contraseña incorrectos</span>
+            </div>
+
+            <form id="loginForm" onsubmit="login(event)">
+                <div class="input-group">
+                    <label for="loginUser">Usuario</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-user"></i>
+                        <input 
+                            id="loginUser" 
+                            type="text" 
+                            placeholder="Ingresa tu usuario" 
+                            required
+                            autocomplete="username"
+                        >
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="loginPass">Contraseña</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock"></i>
+                        <input 
+                            id="loginPass" 
+                            type="password" 
+                            placeholder="Ingresa tu contraseña" 
+                            required
+                            autocomplete="current-password"
+                        >
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            <i class="fa-solid fa-eye" id="toggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>o</span>
+            </div>
+
+            <div class="register-link">
+                <p style="color: var(--text-muted); margin-bottom: 8px;">¿No tienes cuenta?</p>
+                <a href="register.html">
+                    Crear cuenta nueva
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById("loginPass");
+            const toggleIcon = document.getElementById("toggleIcon");
+            
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleIcon.classList.remove("fa-eye");
+                toggleIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                toggleIcon.classList.remove("fa-eye-slash");
+                toggleIcon.classList.add("fa-eye");
+            }
+        }
+
+        // Función de login
+        function login(event) {
+            event.preventDefault();
+            
+            const user = document.getElementById("loginUser").value.trim();
+            const pass = document.getElementById("loginPass").value.trim();
+
+            const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+            const encontrado = usuarios.find(u => u.usuario === user && u.password === pass);
+
+            if (!encontrado) {
+                showError("Usuario o contraseña incorrectos");
+                return;
+            }
+
+            localStorage.setItem("session", JSON.stringify(encontrado));
+            
+            // Animación de éxito antes de redirigir
+            document.querySelector(".btn-login").innerHTML = '<i class="fa-solid fa-circle-check"></i> ¡Bienvenido!';
+            document.querySelector(".btn-login").style.background = 'linear-gradient(135deg, #28a745 0%, #20873a 100%)';
+            
+            setTimeout(() => {
+                location.href = "lista.html";
+            }, 800);
+        }
+
+        // Mostrar error
+        function showError(message) {
+            const alert = document.getElementById("alertError");
+            const errorMessage = document.getElementById("errorMessage");
+            
+            errorMessage.textContent = message;
+            alert.classList.add("show");
+            
+            // Ocultar después de 4 segundos
+            setTimeout(() => {
+                alert.classList.remove("show");
+            }, 4000);
+        }
+
+        // Limpiar error al escribir
+        document.getElementById("loginUser").addEventListener("input", () => {
+            document.getElementById("alertError").classList.remove("show");
+        });
+
+        document.getElementById("loginPass").addEventListener("input", () => {
+            document.getElementById("alertError").classList.remove("show");
+        });
+    </script>
+
+</body>
+</html>

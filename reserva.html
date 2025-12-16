@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title>saborAlInstante | Inicio</title>
+		<link rel="icon" href="images/logo.svg" type="image/svg+xml" />
+		<!-- CDN Fontawesome -->
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+			integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		/>
+		<link rel="stylesheet" href="css/global.css" />
+		<link rel="stylesheet" href="css/header.css" />
+		<!-- Estilo individual de la página -->
+		<link rel="stylesheet" href="css/home.css" />
+		<link rel="stylesheet" href="css/footer.css" />
+		<link rel="stylesheet" href="css/menu.css" />
+        <link rel="stylesheet" href="css/reserva.css" />
+	</head>
+
+<body>
+
+    <header>
+        <div class="container header-expand">
+            <div class="container-logo">
+                <img src="images/logo.svg" alt="Logo" />
+                <span>sabor al instante</span>
+            </div>
+
+            <nav>
+                <ul>
+                    <li>
+                        <a href="index.html">Inicio</a>
+                    </li>
+                    <li>
+                        <a href="sobrenosotros.html">Acerca</a>
+                    </li>
+                    <li>
+                        <a href="lista.html">Sesion</a>
+                    </li>
+                    <li>
+                        <a href="menu.html">Menú</a>
+                    </li>
+                    <li>
+                        <a href="contacto.html">Contacto</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <a href="reserva.html" class="btn btn-primary"
+                >Reserva una mesa
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
+            <div class="menu-responsive">
+                <ul>
+                    <li>
+                        <a href="index.html">Inicio</a>
+                    </li>
+                    <li>
+                        <a href="sobrenosotros.html">Acerca</a>
+                    </li>
+                    <li>
+                        <a href="lista.html">Sesion</a>
+                    </li>
+                    <li>
+                        <a href="menu.html">Menú</a>
+                    </li>
+                    <li>
+                        <a href="contacto.html">Contacto</a>
+                    </li>
+                </ul>
+            </div>
+
+            <button class="btn-toggle">
+                <i class="fa-solid fa-bars active"></i>
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="menu-responsive">
+                <ul>
+                    <li>
+                        <a href="index.html">Inicio</a>
+                    </li>
+                    <li>
+                        <a href="sobrenosotros.html">Acerca</a>
+                    </li>
+                    <li>
+                        <a href="lista.html">Sesion</a>
+                    </li>
+                    <li>
+                        <a href="menu.html">Menú</a>
+                    </li>
+                    <li>
+                        <a href="contacto.html">Contacto</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- HERO -->
+    <section class="reserva-hero">
+        <div class="overlay"></div>
+        <div class="content">
+            <h1>Reserva tu mesa</h1>
+            <p>Disfruta de una experiencia única llena de sabor y calidad.</p>
+        </div>
+    </section>
+
+
+
+    <!-- SECCIÓN FORMULARIO -->
+    <section class="reserva-container">
+        <div class="reserva-box">
+
+            <div class="reserva-info">
+                <h3>Horarios de Atención</h3>
+                <p>Lunes a Jueves: 10:00 AM - 09:00 PM</p>
+                <p>Viernes y Sábados: 10:00 AM - 9:00 PM</p>
+                <p>Domingos: Cerrado</p>
+
+                <h3>Contacto</h3>
+                <p><strong>Tel:</strong> +57 320 123 4567</p>
+                <p><strong>Dirección:</strong> Calle 2N #66-86 Km 11, Buenaventura</p>
+
+                <h3>Recomendaciones</h3>
+                <ul>
+                    <li>Reserva mínimo con 2 horas de anticipación.</li>
+                    <li>Llega 10 minutos antes de tu hora programada.</li>
+                    <li>Las reservas se mantienen por 15 minutos.</li>
+                </ul>
+            </div>
+
+            <!-- FORMULARIO -->
+            <form class="reserva-form" id="formReserva">
+                <h2>Completa tus datos</h2>
+            
+                <div class="group">
+                    <label>Nombre Completo</label>
+                    <input id="nombre" type="text" placeholder="Ej: Helen Farina" required />
+                </div>
+            
+                <div class="double">
+                    <div class="group">
+                        <label>Correo Electrónico</label>
+                        <input id="correo" type="email" placeholder="ejemplo@gmail.com" required />
+                    </div>
+            
+                    <div class="group">
+                        <label>Teléfono</label>
+                        <input id="telefono" type="tel" placeholder="+57 310 000 0000" required />
+                    </div>
+                </div>
+            
+                <div class="triple">
+                    <div class="group">
+                        <label>Fecha</label>
+                        <input id="fecha" type="date" required />
+                    </div>
+            
+                    <div class="group">
+                        <label>Hora</label>
+                        <select id="hora" required>
+                            <option selected disabled>Selecciona una hora</option>
+                            <option>10:00 AM</option>
+                            <option>11:00 AM</option>
+                            <option>12:00 PM</option>
+                            <option>01:00 PM</option>
+                            <option>02:00 PM</option>
+                            <option>03:00 PM</option>
+                            <option>04:00 PM</option>
+                            <option>05:00 PM</option>
+                            <option>06:00 PM</option>
+                            <option>07:00 PM</option>
+                            <option>08:00 PM</option>
+                            <option>09:00 PM</option>
+                        </select>
+                    </div>
+            
+                    <div class="group">
+                        <label>N° Personas</label>
+                        <select id="personas" required>
+                            <option selected disabled>Selecciona</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>5</option>
+                            <option>10</option>
+                            <option>15</option>
+                            <option>20</option>
+                        </select>
+                    </div>
+                </div>
+            
+                <button type="submit" class="btn-reservar">Reservar ahora</button>
+            </form>
+            
+        </div>
+    </section>
+    <script src="js/reservas.js"></script>
+    <script src="js/home.js"></script>
+    <script src="js/partials.js"></script>
+    <script src="js/testimonial.js"></script>
+
+
+</body>
+</html>

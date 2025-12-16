@@ -1,0 +1,177 @@
+/* HERO */
+.reserva-hero {
+    position: relative;
+    height: 45vh;
+    background: url('../images/menu/chef1.png') center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+}
+
+.reserva-hero .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+}
+
+.reserva-hero .content {
+    position: relative;
+    z-index: 2;
+}
+
+.reserva-hero h1 {
+    font-size: 3rem;
+    margin-bottom: 5px;
+}
+
+.reserva-hero p {
+    font-size: 1.1rem;
+}
+
+/* CONTENEDOR PRINCIPAL */
+.reserva-container {
+    padding: 70px 8%;
+    display: flex;
+    justify-content: center;
+}
+
+.reserva-box {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 40px;
+    background: #1d1f1c;
+    padding: 40px;
+    border-radius: 18px;
+    color: white;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+}
+
+/* INFORMACIÓN */
+.reserva-info h3 {
+    margin: 15px 0 5px;
+    color: #c9c9a3;
+}
+
+.reserva-info p,
+.reserva-info li {
+    color: #e8e8e8;
+}
+
+.reserva-info ul {
+    padding-left: 18px;
+}
+
+/* FORMULARIO */
+.reserva-form h2 {
+    margin-bottom: 20px;
+    color: #e2e2c9;
+    font-size: 1.6rem;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.group label {
+    margin-bottom: 5px;
+}
+
+.group input,
+.group select {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: none;
+    background: #2a2d28;
+    color: white;
+}
+
+.double,
+.triple {
+    display: grid;
+    gap: 15px;
+}
+
+.double {
+    grid-template-columns: 1fr 1fr;
+}
+
+.triple {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.btn-reservar {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    border: none;
+    background: #8fae56;
+    color: white;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-reservar:hover {
+    background: #7f9b4b;
+}
+
+/* RESPONSIVO */
+@media (max-width: 900px) {
+    .reserva-box {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* MENSAJES DE ALERTA */
+.mensaje-alerta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+    animation: slideDown 0.3s ease;
+    transition: opacity 0.3s ease;
+}
+
+.mensaje-alerta i {
+    font-size: 1.3rem;
+}
+
+.mensaje-alerta.error {
+    background: rgba(220, 53, 69, 0.15);
+    border: 1px solid rgba(220, 53, 69, 0.4);
+    color: #ff6b7a;
+}
+
+.mensaje-alerta.error i {
+    color: #dc3545;
+}
+
+.mensaje-alerta.exito {
+    background: rgba(143, 174, 86, 0.15);
+    border: 1px solid rgba(143, 174, 86, 0.4);
+    color: #a8d46f;
+}
+
+.mensaje-alerta.exito i {
+    color: #8fae56;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+

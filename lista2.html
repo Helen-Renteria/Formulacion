@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Admin - Reservas y Contacto | Sabor al Instante</title>
+<script>
+    // Bloquea acceso sin sesión activa
+    const sesion = JSON.parse(localStorage.getItem("session"));
+    if (!sesion) location.href = "login.html";
+    </script>
+    <button onclick="cerrarSesion()" class="btn-cerrar">Cerrar sesión</button>
+
+    <script>
+    function cerrarSesion() {
+        localStorage.removeItem("session");
+        location.href = "login.html";
+    }
+    </script>
+    
+    
+<!-- FontAwesome -->
+<link rel="stylesheet"
+ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<style>
+  :root{
+    --green:#2e7d32;
+    --green-dark:#1b5e20;
+    --light:#f4f4f4;
+    --card:#ffffff;
+    --accent:#8fae56;
+    --danger:#d93636;
+    --muted:#7a7a7a;
+  }
+
+  *{box-sizing:border-box}
+  body{font-family:Inter, system-ui, -apple-system, "Poppins", Arial, sans-serif; margin:0; background:var(--light); color:#222}
+  header{background:var(--green); color:white; padding:18px; text-align:center; font-weight:700; box-shadow:0 3px 10px rgba(0,0,0,.12)}
+  .wrap{width:95%; max-width:1100px; margin:28px auto;}
+
+  .panel{
+    background:var(--card);
+    border-radius:14px;
+    padding:22px;
+    box-shadow:0 8px 30px rgba(0,0,0,.06);
+  }
+
+  .top-row{display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-bottom:18px}
+  .title {font-size:20px; color:var(--green-dark); font-weight:700}
+  .controls {display:flex; gap:10px; align-items:center}
+
+  select, input[type="text"]{
+    padding:10px 12px; border-radius:10px; border:1px solid #e0e0e0; font-size:14px;
+  }
+
+  .btn {
+    background:var(--green); color:white; padding:10px 14px; border-radius:10px; border:none; cursor:pointer; font-weight:700;
+  }
+  .btn.ghost { background:transparent; color:var(--green); border:2px solid var(--green) }
+
+  .table-wrap { overflow:auto; border-radius:12px; margin-top:10px; }
+  table { width:100%; border-collapse:collapse; min-width:720px; }
+  th, td { padding:12px 14px; text-align:left; border-bottom:1px solid #f0f0f0; vertical-align:middle; }
+  th { background:linear-gradient(90deg,var(--green) 0%, var(--green-dark) 100%); color:#fff; font-weight:700; position:sticky; top:0; }
+  td .muted{color:var(--muted); font-size:13px}
+
+  .actions button { margin-right:8px; padding:8px 10px; border-radius:8px; border:none; color:white; cursor:pointer }
+  .actions .edit { background:#f4a026 }
+  .actions .delete { background:var(--danger) }
+
+  .no-data { text-align:center; padding:30px; color:var(--muted) }
+
+  /* MODAL */
+  .modal {
+    position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+    background: rgba(0,0,0,.45); z-index:9999; padding:20px;
+  }
+  .modal.show { display:flex }
+  .modal-card {
+    width:100%; max-width:720px; background:var(--card); border-radius:14px; padding:20px; box-shadow:0 12px 40px rgba(0,0,0,.2);
+  }
+
+  .modal-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .field { display:flex; flex-direction:column; margin-bottom:8px }
+  .field label { font-weight:600; margin-bottom:6px; font-size:14px }
+  .field input, .field select, .field textarea {
+    padding:10px 12px; border-radius:10px; border:1px solid #e6e6e6; font-size:14px;
+  }
+  textarea { min-height:110px; resize:vertical }
+
+  .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:12px }
+  .modal-actions .btn { padding:10px 16px; }
+  .btn.cancel { background:#777; font-weight:600 }
+  .help { font-size:13px; color:var(--muted); margin-bottom:8px }
+
+  /* Responsive */
+  @media (max-width:900px){
+    .modal-grid { grid-template-columns:1fr }
+    table{ min-width:640px }
+  }
+
+  /* alert */
+  .alert {
+    position:fixed; right:18px; bottom:18px; background:var(--green-dark); color:white; padding:12px 16px; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,.18);
+  }
+</style>
+</head>
+<body>
+
+<header>Panel administrativo — Sabor al Instante</header>
+
+<div class="wrap">
+  <div class="panel">
+    <div class="top-row">
+      <div class="title">Gestión — Reservas y Mensajes</div>
+
+      <div class="controls">
+        <label for="viewSelect" class="help" style="margin-right:8px;color:var(--muted)">Ver:</label>
+        <select id="viewSelect">
+          <option value="reservas">Reservas</option>
+          <option value="mensajes">Mensajes de contacto</option>
+        </select>
+
+        <input type="text" id="searchInput" placeholder="Buscar por nombre, correo o teléfono..." style="width:340px">
+
+        <button id="btnNew" class="btn">+ Nuevo</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead id="thead">
+          <!-- se inyecta -->
+        </thead>
+        <tbody id="tbody">
+          <!-- se inyecta -->
+        </tbody>
+      </table>
+    </div>
+
+    <div id="noData" class="no-data" style="display:none">No hay registros para mostrar</div>
+  </div>
+</div>
+
+<!-- MODAL RESERVA (editar/crear) -->
+<div id="modalReserva" class="modal" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true">
+    <h3 style="color:var(--green-dark); margin-top:0">Reserva — <span id="modalReservaMode">Nuevo</span></h3>
+    <p class="help">Horario: Lun–Jue 10:00–21:00 | Vie–Sáb 09:00–22:00 | Domingos cerrado</p>
+
+    <div class="modal-grid">
+      <div class="field">
+        <label for="resNombre">Nombre completo</label>
+        <input id="resNombre" type="text" />
+      </div>
+
+      <div class="field">
+        <label for="resCorreo">Correo electrónico</label>
+        <input id="resCorreo" type="email" />
+      </div>
+
+      <div class="field">
+        <label for="resTelefono">Teléfono</label>
+        <input id="resTelefono" type="tel" />
+      </div>
+
+      <div class="field">
+        <label for="resFecha">Fecha</label>
+        <input id="resFecha" type="date" />
+      </div>
+
+      <div class="field">
+        <label for="resHora">Hora</label>
+        <select id="resHora"><option disabled selected>Selecciona una hora</option></select>
+      </div>
+
+      <div class="field">
+        <label for="resPersonas">N° personas</label>
+        <select id="resPersonas">
+          <option disabled selected>Selecciona</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>10</option>
+        </select>
+      </div>
+
+      <div class="field" style="grid-column:1 / -1">
+        <label for="resNotas">Notas (opcional)</label>
+        <textarea id="resNotas" placeholder="Alguna preferencia o nota..."></textarea>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn cancel" onclick="closeModalReserva()">Cancelar</button>
+      <button class="btn" id="saveReservaBtn">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MENSAJE (editar/crear) -->
+<div id="modalMensaje" class="modal" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true">
+    <h3 style="color:var(--green-dark); margin-top:0">Mensaje — <span id="modalMensajeMode">Nuevo</span></h3>
+
+    <div style="margin-bottom:8px" class="help">Editar o crear un mensaje de contacto</div>
+
+    <div style="display:grid; gap:10px">
+      <div class="field">
+        <label for="msgNombre">Nombre</label>
+        <input id="msgNombre" type="text" />
+      </div>
+
+      <div class="field">
+        <label for="msgCorreo">Correo</label>
+        <input id="msgCorreo" type="email" />
+      </div>
+
+      <div class="field">
+        <label for="msgTelefono">Teléfono</label>
+        <input id="msgTelefono" type="tel" />
+      </div>
+
+      <div class="field">
+        <label for="msgTexto">Mensaje</label>
+        <textarea id="msgTexto"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-actions" style="margin-top:12px">
+      <button class="btn cancel" onclick="closeModalMensaje()">Cancelar</button>
+      <button class="btn" id="saveMensajeBtn">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Alert -->
+<div id="alertBox" style="display:none" class="alert"></div>
+
+<script>
+/* ============================
+   ESTRUCTURA Y DATOS INICIALES
+   ============================ */
+let reservas = JSON.parse(localStorage.getItem('reservas')) || [];
+let mensajes = JSON.parse(localStorage.getItem('mensajesContacto')) || [];
+
+const viewSelect = document.getElementById('viewSelect');
+const searchInput = document.getElementById('searchInput');
+const btnNew = document.getElementById('btnNew');
+const thead = document.getElementById('thead');
+const tbody = document.getElementById('tbody');
+const noData = document.getElementById('noData');
+
+let currentView = viewSelect.value; // 'reservas' | 'mensajes'
+
+// Modal controls
+const modalReserva = document.getElementById('modalReserva');
+const modalMensaje = document.getElementById('modalMensaje');
+const alertBox = document.getElementById('alertBox');
+
+let editReservaId = null;
+let editMensajeId = null;
+
+/* ============================
+   UI: RENDER
+   ============================ */
+function render(){
+  currentView = viewSelect.value;
+  const q = searchInput.value.trim().toLowerCase();
+
+  if(currentView === 'reservas'){
+    renderReservas(q);
+  } else {
+    renderMensajes(q);
+  }
+}
+
+function renderReservas(query = ''){
+  thead.innerHTML = `
+    <tr>
+      <th>Nombre</th><th>Correo</th><th>Teléfono</th><th>Fecha</th><th>Hora</th><th>Personas</th><th>Acciones</th>
+    </tr>
+  `;
+
+  const list = reservas.filter(r => {
+    if(!query) return true;
+    return (r.nombre||'').toLowerCase().includes(query)
+        || (r.correo||'').toLowerCase().includes(query)
+        || (r.telefono||'').toLowerCase().includes(query);
+  });
+
+  tbody.innerHTML = '';
+  if(list.length === 0){
+    noData.style.display = 'block';
+    return;
+  } else noData.style.display = 'none';
+
+  list.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${escapeHtml(r.nombre||'')}</td>
+      <td>${escapeHtml(r.correo||'')}</td>
+      <td>${escapeHtml(r.telefono||'')}</td>
+      <td>${escapeHtml(r.fecha||'')}</td>
+      <td>${escapeHtml(r.hora||'')}</td>
+      <td>${escapeHtml(r.personas||'')}</td>
+      <td class="actions">
+        <button class="edit" onclick="openEditReserva('${r.id}')"><i class="fa-solid fa-pen"></i></button>
+        <button class="delete" onclick="deleteReserva('${r.id}')"><i class="fa-solid fa-trash"></i></button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderMensajes(query = ''){
+  thead.innerHTML = `
+    <tr><th>Nombre</th><th>Correo</th><th>Teléfono</th><th>Mensaje</th><th>Acciones</th></tr>
+  `;
+
+  const list = mensajes.filter(m => {
+    if(!query) return true;
+    return (m.nombre||'').toLowerCase().includes(query)
+        || (m.correo||'').toLowerCase().includes(query)
+        || (m.telefono||'').toLowerCase().includes(query)
+        || (m.mensaje||'').toLowerCase().includes(query);
+  });
+
+  tbody.innerHTML = '';
+  if(list.length === 0){
+    noData.style.display = 'block';
+    return;
+  } else noData.style.display = 'none';
+
+  list.forEach(m => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${escapeHtml(m.nombre||'')}</td>
+      <td>${escapeHtml(m.correo||'')}</td>
+      <td>${escapeHtml(m.telefono||'')}</td>
+      <td>${escapeHtml(m.mensaje||'')}</td>
+      <td class="actions">
+        <button class="edit" onclick="openEditMensaje('${m.id}')"><i class="fa-solid fa-pen"></i></button>
+        <button class="delete" onclick="deleteMensaje('${m.id}')"><i class="fa-solid fa-trash"></i></button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/* ============================
+   UTILIDADES
+   ============================ */
+function persist(){
+  localStorage.setItem('reservas', JSON.stringify(reservas));
+  localStorage.setItem('mensajesContacto', JSON.stringify(mensajes));
+}
+
+function showAlert(text, timeout=2500){
+  alertBox.textContent = text;
+  alertBox.style.display = 'block';
+  setTimeout(()=> alertBox.style.display='none', timeout);
+}
+
+function escapeHtml(str){
+  return String(str)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#039;');
+}
+
+/* ============================
+   RESERVAS: CRUD
+   ============================ */
+
+// Helpers: DOM inputs
+const resNombre = document.getElementById('resNombre');
+const resCorreo = document.getElementById('resCorreo');
+const resTelefono = document.getElementById('resTelefono');
+const resFecha = document.getElementById('resFecha');
+const resHora = document.getElementById('resHora');
+const resPersonas = document.getElementById('resPersonas');
+const resNotas = document.getElementById('resNotas');
+
+document.getElementById('resFecha').addEventListener('change', ()=> {
+  generateHoursForDate(resFecha.value, resHora);
+});
+
+// generar horas según el día (misma lógica que pediste)
+function generateHoursForDate(fechaStr, selectEl){
+  selectEl.innerHTML = `<option disabled selected>Selecciona una hora</option>`;
+  if(!fechaStr) return;
+
+  const day = new Date(fechaStr + 'T00:00').getDay(); // 0=dom
+  if(day === 0){
+    showAlert('El restaurante está cerrado los domingos.');
+    selectEl.innerHTML = `<option disabled selected>Domingos cerrado</option>`;
+    return;
+  }
+
+  let start=10, end=21;
+  if(day===5 || day===6) { start=9; end=22; } // vie y sab
+
+  // Rango por hora (ej. 10:00 AM ... 21:00 PM)
+  for(let h=start; h<=end; h++){
+    const ampm = h>=12 ? 'PM' : 'AM';
+    const h12 = (h%12)===0 ? 12 : (h%12);
+    const label = `${h12}:00 ${ampm}`;
+    const opt = document.createElement('option');
+    opt.value = label;
+    opt.textContent = label;
+    selectEl.appendChild(opt);
+  }
+}
+
+// Abrir modal nuevo reserva
+function openNewReserva(){
+  editReservaId = null;
+  document.getElementById('modalReservaMode').textContent = 'Nuevo';
+  resNombre.value = '';
+  resCorreo.value = '';
+  resTelefono.value = '';
+  resFecha.value = '';
+  resHora.innerHTML = `<option disabled selected>Selecciona una hora</option>`;
+  resPersonas.value = '';
+  resNotas.value = '';
+  modalReserva.classList.add('show');
+}
+
+// Abrir modal editar reserva
+function openEditReserva(id){
+  const r = reservas.find(x => x.id === id);
+  if(!r) return showAlert('Reserva no encontrada');
+  editReservaId = id;
+  document.getElementById('modalReservaMode').textContent = 'Editar';
+  resNombre.value = r.nombre || '';
+  resCorreo.value = r.correo || '';
+  resTelefono.value = r.telefono || '';
+  resFecha.value = r.fecha || '';
+  // generar horas para fecha y seleccionar la hora
+  generateHoursForDate(resFecha.value, resHora);
+  // dejar pequeño timeout para asegurar opciones creadas
+  setTimeout(()=> { resHora.value = r.hora || ''; }, 50);
+  resPersonas.value = r.personas || '';
+  resNotas.value = r.notas || '';
+  modalReserva.classList.add('show');
+}
+
+// Cerrar
+function closeModalReserva(){ modalReserva.classList.remove('show'); editReservaId = null; }
+
+// Guardar (nuevo o editar)
+document.getElementById('saveReservaBtn').addEventListener('click', ()=> {
+  // validaciones básicas
+  if(!resNombre.value.trim()){ return showAlert('Ingresa nombre'); }
+  if(!resCorreo.value.trim()){ return showAlert('Ingresa correo'); }
+  if(!resFecha.value){ return showAlert('Selecciona fecha'); }
+  // comprobar dia domingo
+  const dia = new Date(resFecha.value + 'T00:00').getDay();
+  if(dia === 0){ return showAlert('No se permiten reservas los domingos'); }
+  if(!resHora.value || resHora.value.includes('Selecciona')){ return showAlert('Selecciona una hora válida'); }
+
+  if(editReservaId){
+    // editar
+    const r = reservas.find(x => x.id === editReservaId);
+    if(!r) return showAlert('Error al editar');
+    r.nombre = resNombre.value.trim();
+    r.correo = resCorreo.value.trim();
+    r.telefono = resTelefono.value.trim();
+    r.fecha = resFecha.value;
+    r.hora = resHora.value;
+    r.personas = resPersonas.value;
+    r.notas = resNotas.value;
+    showAlert('Reserva actualizada');
+  } else {
+    // nuevo
+    const nuevo = {
+      id: String(Date.now()),
+      nombre: resNombre.value.trim(),
+      correo: resCorreo.value.trim(),
+      telefono: resTelefono.value.trim(),
+      fecha: resFecha.value,
+      hora: resHora.value,
+      personas: resPersonas.value,
+      notas: resNotas.value
+    };
+    reservas.unshift(nuevo);
+    showAlert('Reserva creada');
+  }
+
+  persist();
+  closeModalReserva();
+  render();
+});
+
+/* ============================
+   Mensajes: CRUD
+   ============================ */
+
+const msgNombre = document.getElementById('msgNombre');
+const msgCorreo = document.getElementById('msgCorreo');
+const msgTelefono = document.getElementById('msgTelefono');
+const msgTexto = document.getElementById('msgTexto');
+
+function openNewMensaje(){
+  editMensajeId = null;
+  document.getElementById('modalMensajeMode').textContent = 'Nuevo';
+  msgNombre.value=''; msgCorreo.value=''; msgTelefono.value=''; msgTexto.value='';
+  modalMensaje.classList.add('show');
+}
+
+function openEditMensaje(id){
+  const m = mensajes.find(x=> x.id===id);
+  if(!m) return showAlert('Mensaje no encontrado');
+  editMensajeId = id;
+  document.getElementById('modalMensajeMode').textContent = 'Editar';
+  msgNombre.value = m.nombre || '';
+  msgCorreo.value = m.correo || '';
+  msgTelefono.value = m.telefono || '';
+  msgTexto.value = m.mensaje || '';
+  modalMensaje.classList.add('show');
+}
+
+function closeModalMensaje(){ modalMensaje.classList.remove('show'); editMensajeId = null; }
+
+document.getElementById('saveMensajeBtn').addEventListener('click', ()=>{
+  if(!msgNombre.value.trim()){ return showAlert('Ingresa nombre'); }
+  if(!msgCorreo.value.trim()){ return showAlert('Ingresa correo'); }
+  if(!msgTexto.value.trim()){ return showAlert('Ingresa mensaje'); }
+
+  if(editMensajeId){
+    const m = mensajes.find(x=> x.id===editMensajeId);
+    if(!m) return showAlert('Error al editar');
+    m.nombre = msgNombre.value.trim();
+    m.correo = msgCorreo.value.trim();
+    m.telefono = msgTelefono.value.trim();
+    m.mensaje = msgTexto.value.trim();
+    showAlert('Mensaje actualizado');
+  } else {
+    const nuevo = {
+      id: String(Date.now()),
+      nombre: msgNombre.value.trim(),
+      correo: msgCorreo.value.trim(),
+      telefono: msgTelefono.value.trim(),
+      mensaje: msgTexto.value.trim()
+    };
+    mensajes.unshift(nuevo);
+    showAlert('Mensaje creado');
+  }
+
+  persist(); closeModalMensaje(); render();
+});
+
+/* ============================
+   Delete functions
+   ============================ */
+function deleteReserva(id){
+  if(!confirm('Eliminar reserva?')) return;
+  reservas = reservas.filter(r => r.id !== id);
+  persist(); render(); showAlert('Reserva eliminada');
+}
+function deleteMensaje(id){
+  if(!confirm('Eliminar mensaje?')) return;
+  mensajes = mensajes.filter(m => m.id !== id);
+  persist(); render(); showAlert('Mensaje eliminado');
+}
+
+/* ============================
+   EVENTOS UI
+   ============================ */
+viewSelect.addEventListener('change', ()=> {
+  render();
+});
+
+// Búsqueda en vivo
+searchInput.addEventListener('input', ()=> {
+  render();
+});
+
+// Nuevo
+btnNew.addEventListener('click', ()=> {
+  if(viewSelect.value === 'reservas') openNewReserva();
+  else openNewMensaje();
+});
+
+/* ============================
+   Inicializar (primer render)
+   ============================ */
+render();
+
+/* ============================
+   Cerrar modales con Escape o click fuera
+   ============================ */
+window.addEventListener('keydown', e=>{
+  if(e.key === 'Escape'){
+    closeModalReserva(); closeModalMensaje();
+  }
+});
+
+modalReserva.addEventListener('click', (e)=>{
+  if(e.target === modalReserva) closeModalReserva();
+});
+modalMensaje.addEventListener('click', (e)=>{
+  if(e.target === modalMensaje) closeModalMensaje();
+});
+
+</script>
+
+</body>
+</html>

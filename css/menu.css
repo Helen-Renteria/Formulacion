@@ -1,0 +1,170 @@
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: #0f1210;
+    color: white;
+}
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background: rgba(0, 0, 0, 0.6);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 20;
+    backdrop-filter: blur(6px);
+}
+
+.navbar .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navbar .logo img {
+    width: 40px;
+}
+
+.navbar nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #ddd;
+    font-size: 16px;
+}
+
+nav .active {
+    color: white;
+    font-weight: bold;
+}
+
+.btn-reserva {
+    padding: 12px 25px;
+    background: #c1b68d;
+    border-radius: 30px;
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* HERO */
+.hero {
+    height: 400px;
+    background: url('https://i.imgur.com/sfVkEdG.jpeg') center/cover no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    text-shadow: 0 3px 10px black;
+}
+
+.hero h1 {
+    font-size: 60px;
+    font-weight: bold;
+}
+
+/* CATEGORÍAS */
+.categorias {
+    padding: 80px 50px;
+    text-align: center;
+}
+
+.sub {
+    color: #c1b68d;
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+.categorias h2 {
+    font-size: 40px;
+    margin-top: 10px;
+}
+
+.categorias h2 span {
+    color: #c1b68d;
+}
+
+.descripcion {
+    width: 70%;
+    margin: auto;
+    margin-bottom: 40px;
+    color: #ccc;
+}
+
+.lista-categorias {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.cat {
+    text-align: center;
+}
+
+.cat img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: 0.3s;
+}
+
+.cat img:hover {
+    transform: scale(1.1);
+}
+
+.cat p {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+/* SECCIONES DEL MENÚ */
+.menu-seccion {
+    padding: 70px 100px;
+}
+
+.titulo-cat {
+    font-size: 40px;
+    margin-bottom: 40px;
+}
+
+.items {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: #1a1e1b;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.item img {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.item h3 {
+    margin: 0;
+}
+
+.precio {
+    margin-left: auto;
+    padding: 8px 18px;
+    background: #c1b68d;
+    color: black;
+    border-radius: 20px;
+    font-weight: bold;
+}
